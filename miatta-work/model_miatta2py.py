@@ -135,15 +135,6 @@ def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
     diff_scores = [train_score - validate_score for train_score, validate_score in zip(train_scores, validate_scores)]
 
     # Create summary DataFrame
-    
     df = pd.DataFrame({
         'min_samples_leaf': min_samples_leaf_values,
-        'max_depth': max_depth_values,
-        'train_score': train_scores,
-        'validate_score': validate_scores,
-        'score_difference': diff_scores
-    })
-
-    return df
-
        

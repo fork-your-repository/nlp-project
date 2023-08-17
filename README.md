@@ -1,4 +1,4 @@
-# <a name="top"></a>Most forked repositories Project, - Forking Solutions
+# <a name="top"></a>Most Forked Repositories Project- Forking Solutions
 ![]()
 
 
@@ -8,8 +8,6 @@
 [[Initial Thoughts/Questions](#initial_thoughts_questions)]
 [[Data Dictionary](#dictionary)]
 [[Project Planning](#planning)]
-[[Data Acquire and Prep](#wrangle)]
-[[Data Exploration](#explore)]
 [[Key Findings](#findings)]
 [[Statistical Analysis](#stats)]
 [[Modeling](#model)]
@@ -93,44 +91,6 @@ In this project we will be utilizing data from GitHub README files to analyze an
 ### Target 
 
 
-### Need to haves (Deliverables):
--Need to explore the data.
--Run features through statistical tests.
--Select features for modeling
--Run features through atleast 4 different algorythms.
-
-
-
-### Nice to haves (With more time):
-Further feature explore to see if additional groups can be identified before modeling.
-
-
-***
-
-## <a name="findings"></a>Key Findings:
-- Proof is highly correlated with wine quality.
-- Citric acid is moderately correlated with wine quality.
-- Free sulfur dioxide had a week correlation with wine quality.
-
-[[Back to top](#top)]
-
-
-
-
-
-## <a name="wrangle"></a>Data Acquisition and Preparation
-[[Back to top](#top)]
-
-![]()
-
-### Reproduce Project
-
-- Install necessary python packages.
-- Clone the wine_clustering_project repository.
-- Download files from https://data.world/food/wine-quality
-- Unzip and store the csv files in the wine_clustering_project folder.
-- Ensure the wrangle.py, explore.py and model.py files are in the same folder as the wine_final_report.ipynb notebook.
-
 
 ### Wrangle steps: 
 - dropped duplicate rows.
@@ -154,7 +114,6 @@ Further feature explore to see if additional groups can be identified before mod
 
 
 ### Takeaways from exploration:
-- Three features were chosen for statistical testing: proof, citric acid, free sulfur dioxide.
 
 
 ***
@@ -176,13 +135,12 @@ To calculate Pearson's R in Python, we can use the corrcoef function from the nu
 
 In summary, the hypotheses for the PearsonsR test can be stated as follows:
 
-### 1st Hypothesis Does Proof  Affect Wine Quality?
-
+### 1st Hypothesis 
 
 Null Hypothesis (H0): proof does not have a correlation with wine quality.
 Alternative Hypothesis (H1): proof has a correlation with wine quality.
 
-### 2nd Hypothesis Does Free Sulfur Dioxide Affect Wine Quality?
+### 2nd Hypothesis
 
 
 Null Hypothesis (H0): Free sulfur dioxide does not have a correlation with wine quality.
