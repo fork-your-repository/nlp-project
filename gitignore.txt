@@ -1,6 +1,0 @@
-env.py
-env_miatta.py
-.DS_Store
-.ipynb_checkpoints/
-__pycache__
-*.csv
