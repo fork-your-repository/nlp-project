@@ -4,8 +4,8 @@ import nltk.sentiment
 import nltk
 import re
 from nltk.tokenize import ToktokTokenizer
-import env as e
-import acquire as a
+# import env as e
+# import acquire as a
 import os
 import json
 import warnings
