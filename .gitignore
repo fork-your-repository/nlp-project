@@ -4,6 +4,6 @@ env_miatta.py
 .ipynb_checkpoints/
 __pycache__
 *.csv
-data2.json
+
 
 
