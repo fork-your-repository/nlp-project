@@ -217,6 +217,16 @@ if __name__ == "__main__":
     data = scrape_github_data()
     json.dump(data, open("data24.json", "w"), indent=1)
 
+def combine_json_files_and_save(json_file_names, output_file_name):
+    combined_data = []
+
+    for file_name in json_file_names:
+        with open(file_name, "r") as json_file:
+            data = json.load(json_file)
+            combined_data.extend(data)
+
+    with open(output_file_name, "w") as combined_json_file:
+        json.dump(combined_data, combined_json_file, indent=1)
 
 # List of JSON file names
 json_file_names = [
