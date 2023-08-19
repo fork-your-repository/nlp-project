@@ -1,6 +1,6 @@
 ########################### MODELING #######################################
 
-def split_data(df, language:
+def split_data(df, 'language'):
     """
     Splits the data into train, validate, and test DataFrames.
 
