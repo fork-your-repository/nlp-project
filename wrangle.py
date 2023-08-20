@@ -9,6 +9,8 @@ from nltk.tokenize import ToktokTokenizer
 import os
 import json
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
 # Suppressing warnings
 import warnings
 warnings.filterwarnings('ignore')
@@ -175,6 +177,48 @@ def extra_clean_column(words_df, intersect):
 
 
 ################################################ EXPLORE #############################################
+
+def plot_ombre_bars(df, bar_height=0.5):
+    """
+    Plots a horizontal bar chart with an ombre color effect.
+
+    Parameters:
+    - df: DataFrame containing the data to be plotted (expects mean values to be computed).
+    - bar_height: Thickness of each bar. Lower values result in thinner bars.
+
+    Returns:
+    - Plots the horizontal bar chart.
+    """
+    
+    # Setting color palette for the ombre effect
+    colors = ['red', 'darkred', 'darkorange', 'yellow', 'black', 'grey']
+    cmap = LinearSegmentedColormap.from_list("ombre", colors)
+
+    # Set the figure background color to black
+    plt.figure(figsize=(10,7), facecolor='black')
+    means = df.mean()
+
+    # Plotting each bar with gradient colors
+    for i, (index, value) in enumerate(means.iteritems()):
+        gradient = np.linspace(0, 1, 256).reshape(1, -1)
+        gradient = np.vstack((gradient, gradient))
+        extent = [0, value, i + 1 - bar_height, i + 1]
+        plt.imshow(gradient, aspect='auto', cmap=cmap, extent=extent)
+    
+    plt.yticks(np.arange(0.5, len(means) + 0.5), means.index)
+    plt.xlim(0, means.max() + 10)  # Adjusting xlim for better visuals
+
+    # Set the title, axes labels, and title colors to white
+    plt.title('Bar Chart of All Languages', color='white')
+    plt.ylabel('Programming Languages', color='white')
+    plt.xlabel('Mean Value', color='white')
+    plt.tick_params(axis='both', colors='white')
+    plt.gca().spines['bottom'].set_color('white')
+    plt.gca().spines['left'].set_color('white')
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+
+    plt.show()
 
 
 def create_bar_chart(df, column_name, title):
