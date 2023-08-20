@@ -191,7 +191,7 @@ def plot_ombre_bars(df, bar_height=0.5):
     """
     
     # Setting color palette for the ombre effect
-    colors = ['red', 'darkred', 'darkorange', 'yellow', 'black', 'grey']
+    colors = ['red', 'darkred', 'darkorange', 'peach', 'black', 'grey']
     cmap = LinearSegmentedColormap.from_list("ombre", colors)
 
     # Set the figure background color to black
