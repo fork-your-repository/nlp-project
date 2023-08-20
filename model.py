@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report
+from matplotlib.colors import LinearSegmentedColormap
 
 # Suppressing warnings
 import warnings
