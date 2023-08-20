@@ -221,6 +221,49 @@ def plot_ombre_bars(df, bar_height=0.5):
     plt.show()
 
 
+def least_used_words_per_language(train):
+    """
+    Determines the least used words and their corresponding language across different programming languages.
+
+    Args:
+    train (pandas.DataFrame): DataFrame containing the training data.
+
+    Returns:
+    least_used_words_per_column (pandas.Series): Series containing the least used words and their corresponding language.
+
+    """
+    # Gather words for each programming language and overall
+    categories = ['JavaScript', 'Python', 'Java', 'HTML','TypeScript','Other','All']
+    all_words = clean(' '.join(train['clean_contents']))
+    category_words = [clean(' '.join(train[train.language == category]['clean_contents'])) for category in categories]
+
+    # Calculate word frequency for each category
+    category_words_freq = [pd.Series(words).value_counts() for words in category_words]
+
+    # Combine word frequencies for analysis
+    word_counts = pd.concat(category_words_freq, axis=1).fillna(0).astype(int)
+
+    # Rename columns for clarity
+    word_counts.columns = categories
+
+    # Sort columns based on overall word count
+    word_counts_sorted = word_counts.sort_values('All', ascending=False)
+
+    # Calculate the total count of words across all columns
+    word_counts_sorted['Total'] = word_counts_sorted.sum(axis=1)
+
+    # Extract the least used words per programming language
+    least_used_words_per_column = word_counts_sorted.idxmin()
+    
+    
+
+    return least_used_words_per_column
+
+   
+    
+    
+    
+    
 def create_bar_chart(df, column_name, title):
     """
     Creates a horizontal bar chart for a categorical column.
@@ -309,7 +352,7 @@ def least_used_words_per_language(train):
 
     """
     # Gather words for each programming language and overall
-    categories = ['JavaScript', 'Python', 'Java', 'HTML','TypeScript','Other', 'All']
+    categories = ['JavaScript', 'Python', 'Java', 'HTML','TypeScript','Other','All']
     all_words = clean(' '.join(train['clean_contents']))
     category_words = [clean(' '.join(train[train.language == category]['clean_contents'])) for category in categories]
 
@@ -330,6 +373,8 @@ def least_used_words_per_language(train):
 
     # Extract the least used words per programming language
     least_used_words_per_column = word_counts_sorted.idxmin()
+    
+    
 
     return least_used_words_per_column
 
