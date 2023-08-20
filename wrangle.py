@@ -267,34 +267,70 @@ def create_bar_chart(df, column_name, title):
 
 
 
-def analyze_word_frequency(train, column_name, num_words):
+# def analyze_word_frequency(train, column_name, num_words):
+#     """
+#     Analyzes word frequency in a specific column across different programming languages.
+
+#     Args:
+#     train (pandas.DataFrame): DataFrame containing the training data.
+#     column_name (str): Column to analyze.
+#     num_words (int): Number of words to display.
+
+#     Returns:
+#     word_counts (pandas.DataFrame): DataFrame with word counts.
+
+#     """
+#     # Combine words based on programming languages
+#     words_by_language = {
+#         language: clean(' '.join(train[train.language == language][column_name]))
+#         for language in train.language.unique()
+#     }
+
+#     # Calculate word frequencies
+#     word_freqs_by_language = {
+#         language: pd.Series(words).value_counts().head(num_words)
+#         for language, words in words_by_language.items()
+#     }
+
+#     # Create word counts DataFrame
+#     word_counts = pd.DataFrame(word_freqs_by_language).fillna(0).astype(int)
+
+#     return word_counts
+
+def least_used_words_per_language(train):
     """
-    Analyzes word frequency in a specific column across different programming languages.
+    Determines the least used words and their corresponding language across different programming languages.
 
     Args:
     train (pandas.DataFrame): DataFrame containing the training data.
-    column_name (str): Column to analyze.
-    num_words (int): Number of words to display.
 
     Returns:
-    word_counts (pandas.DataFrame): DataFrame with word counts.
+    least_used_words_per_column (pandas.Series): Series containing the least used words and their corresponding language.
 
     """
-    # Combine words based on programming languages
-    words_by_language = {
-        language: clean(' '.join(train[train.language == language][column_name]))
-        for language in train.language.unique()
-    }
+    # Gather words for each programming language and overall
+    categories = ['JavaScript', 'Python', 'Java', 'HTML','TypeScript','Other', 'All']
+    all_words = clean(' '.join(train['clean_contents']))
+    category_words = [clean(' '.join(train[train.language == category]['clean_contents'])) for category in categories]
 
-    # Calculate word frequencies
-    word_freqs_by_language = {
-        language: pd.Series(words).value_counts().head(num_words)
-        for language, words in words_by_language.items()
-    }
+    # Calculate word frequency for each category
+    category_words_freq = [pd.Series(words).value_counts() for words in category_words]
 
-    # Create word counts DataFrame
-    word_counts = pd.DataFrame(word_freqs_by_language).fillna(0).astype(int)
+    # Combine word frequencies for analysis
+    word_counts = pd.concat(category_words_freq, axis=1).fillna(0).astype(int)
 
-    return word_counts
+    # Rename columns for clarity
+    word_counts.columns = categories
+
+    # Sort columns based on overall word count
+    word_counts_sorted = word_counts.sort_values('All', ascending=False)
+
+    # Calculate the total count of words across all columns
+    word_counts_sorted['Total'] = word_counts_sorted.sum(axis=1)
+
+    # Extract the least used words per programming language
+    least_used_words_per_column = word_counts_sorted.idxmin()
+
+    return least_used_words_per_column
 
 # PREAPARE FOR MODELING
