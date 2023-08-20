@@ -220,6 +220,35 @@ def plot_ombre_bars(df, bar_height=0.5):
 
     plt.show()
 
+def most_frequently_words(train):
+    """
+    Identify the most frequent words for each programming language in the dataset.
+    
+    Args:
+    train (pandas.DataFrame): Training dataset with language and content information.
+
+    Returns:
+    pandas.Series: The most frequent word for each programming language.
+    """
+    
+    # Clean and process textual data for Python
+    python_words = w.clean(' '.join(train[train.language == "Python"]['extra_clean_contents']))
+   
+    # Calculate word frequency for Python
+    python_freq = pd.Series(python_words).value_counts()
+    
+    # Aggregate word frequencies across languages
+    word_counts = pd.concat([python_freq], axis=1)
+    word_counts = word_counts.fillna(0).astype(int)
+    word_counts.columns = ['Python']
+
+    # Identify the most frequent word for Python
+    most_used_python_words = word_counts.idxmax()
+
+    # Return the most frequently used word for Python
+    return most_used_python_words
+
+
 
 def least_frequently_words(train):
     """
