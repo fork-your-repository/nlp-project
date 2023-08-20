@@ -221,47 +221,80 @@ def plot_ombre_bars(df, bar_height=0.5):
     plt.show()
 
 
-def least_used_words_per_language(train):
+def least_frequently_words(train):
     """
-    Determines the least used words and their corresponding language across different programming languages.
-
+    Identify the least frequent words for each programming language in the dataset.
+    
     Args:
-    train (pandas.DataFrame): DataFrame containing the training data.
+    train (pandas.DataFrame): Training dataset with language and content information.
 
     Returns:
-    least_used_words_per_column (pandas.Series): Series containing the least used words and their corresponding language.
-
+    pandas.Series: The least frequent word for each programming language.
     """
-    # Gather words for each programming language and overall
-    categories = ['JavaScript', 'Python', 'Java', 'HTML','TypeScript','Other','All']
-    all_words = clean(' '.join(train['clean_contents']))
-    category_words = [clean(' '.join(train[train.language == category]['clean_contents'])) for category in categories]
-
-    # Calculate word frequency for each category
-    category_words_freq = [pd.Series(words).value_counts() for words in category_words]
-
-    # Combine word frequencies for analysis
-    word_counts = pd.concat(category_words_freq, axis=1).fillna(0).astype(int)
-
-    # Rename columns for clarity
-    word_counts.columns = categories
-
-    # Sort columns based on overall word count
-    word_counts_sorted = word_counts.sort_values('All', ascending=False)
-
-    # Calculate the total count of words across all columns
-    word_counts_sorted['Total'] = word_counts_sorted.sum(axis=1)
-
-    # Extract the least used words per programming language
-    least_used_words_per_column = word_counts_sorted.idxmin()
     
+    # Clean and process textual data for each language category
+    python_words = clean(' '.join(train[train.language == "Python"]['extra_clean_contents']))
+    java_words = clean(' '.join(train[train.language == "Java"]['extra_clean_contents']))
+    script_words = clean(' '.join(train[train.language == "JavaScript"]['extra_clean_contents']))
+    html_words = clean(' '.join(train[train.language == "HTML"]['extra_clean_contents']))
+    type_words = clean(' '.join(train[train.language == "TypeScript"]['extra_clean_contents']))
+    other_words = clean(' '.join(train[train.language == "Other"]['extra_clean_contents']))
+    all_words = clean(' '.join(test['extra_clean_contents']))
     
+    # Calculate word frequency for each language
+    python_freq = pd.Series(python_words).value_counts()
+    java_freq = pd.Series(java_words).value_counts()
+    script_freq = pd.Series(script_words).value_counts()
+    html_freq = pd.Series(html_words).value_counts()
+    type_freq = pd.Series(type_words).value_counts()
+    all_freq = pd.Series(all_words).value_counts()
+    other_freq = pd.Series(other_words).value_counts()
+   
+    # Aggregate word frequencies across languages
+    word_counts = (pd.concat([python_freq, java_freq, script_freq, html_freq, type_freq, other_freq, all_freq], axis=1)
+                   .fillna(0).astype(int))
+    word_counts.columns = ['JavaScript', 'Python', 'Java', 'TypeScript', 'HTML', 'Other', 'All']
 
+    # Calculate the cumulative word counts
+    word_counts['Total'] = word_counts.sum(axis=1)
+
+    # Identify the least frequent word for each language
+    least_used_words_per_column = word_counts.idxmin()
+
+    # Visualization
+    least_used_counts = word_counts.loc[least_used_words_per_column]
+
+    # Set up the figure with a black background
+    plt.figure(figsize=(12,6), facecolor='black')
+    ax = plt.gca()
+    ax.set_facecolor('black')  # Setting the background color of the actual plot
+
+    # Horizontal bar plot with red bars and annotations
+    bars = plt.barh(least_used_counts.columns, least_used_counts['Total'].values, color='red')
+
+    # Place the words on the bars
+    for bar, word in zip(bars, least_used_words_per_column.values):
+        plt.text(bar.get_width() - (0.03 * bar.get_width()),  # Position of the text
+                 bar.get_y() + bar.get_height() / 2,  # Vertically center the text on the bar
+                 f'{word} ({bar.get_width()})',  # Text to display (word and its count)
+                 ha='right',  # Horizontal alignment
+                 va='center',  # Vertical alignment
+                 color='white',  # Text color
+                 fontsize=10)  # Font size
+
+    # Set text and label colors to white
+    plt.xlabel('Frequency', color='white')
+    plt.ylabel('Programming Language', color='white')
+    plt.title('Least Frequent Words Per Programming Language', color='white')
+    ax.tick_params(axis='both', colors='white')  # Making tick labels white
+
+    # Display the plot
+    plt.tight_layout()
+    plt.show()
+    
     return least_used_words_per_column
 
-   
-    
-    
+       
     
     
 def create_bar_chart(df, column_name, title):
