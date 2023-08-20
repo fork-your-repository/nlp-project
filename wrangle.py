@@ -1,3 +1,5 @@
+
+# Import Libraries
 import pandas as pd
 import numpy as np
 import nltk.sentiment
@@ -6,10 +8,10 @@ import re
 from nltk.tokenize import ToktokTokenizer
 import os
 import json
+import matplotlib.pyplot as plt
+# Suppressing warnings
 import warnings
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings('ignore')
 
 ####################################### ACQUIRE ##################################
 
@@ -147,7 +149,19 @@ def intersection_list():
     
     # Apply extra cleaning, create new column, return modified DataFrame)
 
-def extra_clean_column(words_df):
+# def extra_clean_column(words_df):
+#     extra_clean_article = []
+#     for i in words_df.index:
+#         article_words = words_df.clean_contents[i].split()
+#         extra_clean = set(intersect) & set(article_words)
+#         extra_clean = sorted(extra_clean)
+#         extra_clean = ' '.join(extra_clean)
+#         extra_clean_article.append(extra_clean)
+
+#     words_df = words_df.assign(extra_clean_contents = extra_clean_article) 
+#     return words_df
+
+def extra_clean_column(words_df, intersect):
     extra_clean_article = []
     for i in words_df.index:
         article_words = words_df.clean_contents[i].split()
@@ -156,8 +170,9 @@ def extra_clean_column(words_df):
         extra_clean = ' '.join(extra_clean)
         extra_clean_article.append(extra_clean)
 
-    words_df = words_df.assign(extra_clean_contents = extra_clean_article) 
+    words_df = words_df.assign(extra_clean_contents=extra_clean_article)
     return words_df
+
 
 ################################################ EXPLORE #############################################
 
@@ -238,140 +253,4 @@ def analyze_word_frequency(train, column_name, num_words):
 
     return word_counts
 
-
-# ################################################## MODELING #########################################
-
-# def split_data(df, variable):
-#     """
-#     Splits the data into train, validate, and test DataFrames.
-
-#     Args:
-#     df (pandas.DataFrame): Input DataFrame.
-#     variable (str): Target variable name.
-
-#     Returns:
-#     train, validate, test DataFrames.
-
-#     """
-#     train_validate, test = train_test_split(df, test_size=0.20, random_state=123, stratify=df[variable])
-#     train, validate = train_test_split(train_validate, test_size=0.25, random_state=123, stratify=train_validate[variable])
-#     return train, validate, test
-
-
-# def prepare_for_modeling(train, validate, test):
-#     """
-#     Prepare the data for modeling by creating feature and target variables.
-
-#     Args:
-#     train (pandas.DataFrame): Training data.
-#     validate (pandas.DataFrame): Validation data.
-#     test (pandas.DataFrame): Test data.
-
-#     Returns:
-#     X_bow, X_validate_bow, X_test_bow, y_train, y_validate, y_test
-#     """
-#     # Create feature and target variables
-#     X_train = train.clean_contents
-#     X_validate = validate.clean_contents
-#     X_test = test.clean_contents
-#     y_train = train.language
-#     y_validate = validate.language
-#     y_test = test.language
-
-#     # Create bag-of-words representations
-#     cv = CountVectorizer()
-#     X_bow = cv.fit_transform(X_train)
-#     X_validate_bow = cv.transform(X_validate)
-#     X_test_bow = cv.transform(X_test)
-    
-#     feature_names = cv.get_feature_names_out()
-    
-#     return X_bow, X_validate_bow, X_test_bow, y_train, y_validate, y_test, feature_names
-
-# def decision_tree(X_bow, X_validate_bow, y_train, y_validate):
-#     """
-#     Train a decision tree classifier and evaluate performance.
-
-#     Args:
-#     X_bow, X_validate_bow: Bag-of-words representations.
-#     y_train, y_validate: Target variables.
-
-#     Returns:
-#     scores_df (pandas.DataFrame): Accuracy scores for different max_depth values.
-#     """
-#     # Train and evaluate decision tree classifier
-#     scores_all = []
-#     for x in range(1, 20):
-#         tree = DecisionTreeClassifier(max_depth=x, random_state=123)
-#         tree.fit(X_bow, y_train)
-#         train_acc = tree.score(X_bow, y_train)
-#         val_acc = tree.score(X_validate_bow, y_validate)
-#         score_diff = train_acc - val_acc
-#         scores_all.append([x, train_acc, val_acc, score_diff])
-
-#     scores_df = pd.DataFrame(scores_all, columns=['max_depth', 'train_acc', 'val_acc', 'score_diff'])
-
-#     # Visualize results
-#     sns.set_style('whitegrid')
-#     plt.plot(scores_df['max_depth'], scores_df['train_acc'], label='Train score')
-#     plt.plot(scores_df['max_depth'], scores_df['val_acc'], label='Validation score')
-#     plt.fill_between(scores_df['max_depth'], scores_df['train_acc'], scores_df['val_acc'], alpha=0.2, color='gray')
-#     plt.xlabel('Max depth')
-#     plt.ylabel('Accuracy')
-#     plt.title('Decision Tree Accuracy vs Max Depth')
-#     plt.legend()
-#     plt.show()
-
-#     return scores_df
-
-# def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
-#     """
-#     Train and evaluate a random forest classifier with different hyperparameters.
-
-#     Args:
-#     X_bow, X_validate_bow: Bag-of-words representations.
-#     y_train, y_validate: Target variables.
-
-#     Returns:
-#     df (pandas.DataFrame): Model performance summary.
-#     """
-#     # Define hyperparameters
-#     train_scores = []
-#     validate_scores = []
-#     min_samples_leaf_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-#     max_depth_values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-
-#     # Train and evaluate random forest classifier
-#     for min_samples_leaf, max_depth in zip(min_samples_leaf_values, max_depth_values):
-#         rf = RandomForestClassifier(min_samples_leaf=min_samples_leaf, max_depth=max_depth, random_state=123)
-#         rf.fit(X_bow, y_train)
-#         train_score = rf.score(X_bow, y_train)
-#         validate_score = rf.score(X_validate_bow, y_validate)
-#         train_scores.append(train_score)
-#         validate_scores.append(validate_score)
-
-#     # Calculate differences between train and validation scores
-#     diff_scores = [train_score - validate_score for train_score, validate_score in zip(train_scores, validate_scores)]
-
-#     # Create summary DataFrame
-    
-#     df = pd.DataFrame({
-#         'min_samples_leaf': min_samples_leaf_values,
-#         'max_depth': max_depth_values,
-#         'train_score': train_scores,
-#         'validate_score': validate_scores,
-#         'score_difference': diff_scores
-#     })
-    
-#     # Visualize results
-#     sns.set_style('whitegrid')
-#     plt.plot(df['min_samples_leaf'], df['train_score'], label='Train score')
-#     plt.plot(df['min_samples_leaf'], df['validate_score'], label='Validation score')
-# #     plt.fill_between(df['train_score'], df['validate_score'], alpha=0.2, color='gray')
-#     plt.xlabel('Min Samples Leaf')
-#     plt.ylabel('Accuracy')
-#     plt.title('Decision Tree Accuracy vs Max Depth')
-#     plt.legend()
-#     plt.show()
-
-#     return df
+# PREAPARE FOR MODELING
