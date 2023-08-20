@@ -306,41 +306,51 @@ Proof had the highest correlation with wine quality, while citric acid and free 
       3. What are the most frequently used words throughout the dataset and for each language?
       4. What are the least frequently used words throughout the dataset and for each language?
 
-- Modeling:
-  - After converting the words into vectors, we will use accuracy as our evaluation metric. This means that we will measure the performance of our model by calculating the percentage of predictions that are correct.
-- The baseline accuracy is 47.1%. This means that a model that predicts all languages randomly would be correct 47.1% of the time.
-- We employed Decision Tree Classifier, Random Forest, and K-Nearest Neighbor as our models for predicting programming languages based on README content. These are three different machine learning algorithms that can be used to predict the programming language from the README content.
+# Modeling:
 
-- Deliverables:
-   - A five minutes oral presentation on prepaired slide presentation summarizing project goal, findings, recommendations and conclusion 
-   - Presentation link: https://www.canva.com/design/DAFrs134NNg/5rL1KU1RcSMto95lbJ02cw/edit?utm_content=DAFrs134NNg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-  
-# Summary/Takeaways:
-- JavaScript 'img', 'bootstrap', 'c' are significantly more prevalent in the language categories compared to other languages.
-- Python shows a higher occurrence of 'python' and 'doc' compared to other language categories.
-- Java stands out with a significantly higher usage of 'readme' compared to other language categories.
-- TypeScript and JavaScript have a notable preference for the word 'code' compared to other language categories.
-- HTML shares the most common words with other language categories, indicating a more balanced distribution.
-- Java utilizes "dubbo" and "apache" more frequently than the other languages.
-- JavaScript has a higher usage of "bootstrap" and "jquery" compared to the other languages.
-- TypeScript shows a higher occurrence of "chatgpt" compared to the other languages.
-- The ANOVA test results indicate that the word count does not effectively identify language categories, and thus the null hypothesis cannot be rejected.
-- The word cloud looks neat and is fun to make, however, it is very difficult to obtain any useful information from it.
-- The Decision Tree model demonstrated superior performance in both the train and validate iterations.
-- The test data achieved an accuracy of 54%, surpassing the baseline by 7%.
+### Decision tree
 
-# Recommendations, and Next Steps:
-- Our model is recommended for predicting programming languages based on README file content across repositories.
-- Further improvements can be made by acquiring more data, exploring different models and hyperparameters.
-- Utilize different features for modeling purposes is also a potential avenue for enhancement.
-- Efficient data cleaning and research on tools, frameworks, and libraries associated with each language will provide further exploration opportunities.
-- Add programming languages tools and frameworks as a new feature for modeling purposes.
-***
-## <a name="sources"></a>Sources:
+- The best performing model was the decision tree with a max depth of 1. This model achieved an accuracy of 0.4 on the test set, which is slightly below baseline. However, it is important to note that the data was not perfectly clean, so this is a promising result. - Decision tree with a max depth of 1 is the best performing model. This model should be further evaluated with a cleaned dataset to see if it can achieve better accuracy.The model was more stable than the random forest and KNN models. The train/validate spread for the decision tree model was relatively consistent, while the train/validate spread for the random forest and KNN models was more erratic.
+- The decision tree model was more interpretable than the random forest and KNN models. The decision tree model can be used to understand how the model makes predictions, while the random forest and KNN models are more black-box models.
+
+### Random forest
+
+- The random forest model with a min_sample_leaf and max_depth of 5 and 6, respectively, also performed well, with an accuracy of 0.41666 on the test set. However, this model was not significantly better than the decision tree model.
+
+### K-nearest neighbors (KNN)
+
+- The KNN model with 7 neighbors achieved an accuracy of 0.61666 on the test set, which is significantly better than the other models. However, this model is more sensitive to the dimensionality of the data, and the bag-of-words representation used in this experiment has 1167 dimensions. This is a high number of dimensions, and it can lead to overfitting.
+
+- Overall, the decision tree model is the best performing model and is the most interpretable model. This model should be further evaluated with a cleaned dataset to see if it can achieve better accuracy.
 
 
-#### 1. Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. Decision Support Systems, 47(4), 547-553. Retrieved from http://dx.doi.org/10.1016/j.dss.2009.05.016.
-#### 
-#### 2. Preda, C., Lopes, G. R. V. D., & Rodrigues, L. M. C. (2009). Wine Quality Data Set. data.world. Retrieved from https://data.world/food/wine-quality.
-#### 
+# Conclusion
 
+- The results were not as promising as due to an error in the cleaning process. However, the decision tree was still able to identify the most popular programming languages used in GitHub READMEs, even though the data was not perfectly clean. This suggests that there is enough information in the data to achieve baseline performance, even with some errors.
+- These results indicate that there is still more work to be done to improve the cleaning pipeline and the analysis and modeling process. This is an opportunity to learn from mistakes and improve the overall process.
+
+
+# Recommendations
+- The cleaning pipeline should be more robust and should be able to handle a wider variety of errors.
+- The analysis should be more thorough and should explore more features of the data.
+- The models should be more sophisticated and should be able to learn from the data more effectively.
+- By addressing these issues, we can improve the accuracy and performance of the system and make it more useful for developers.
+
+
+# Takaways
+
+- A proper acquire and prepare step is essential for any machine learning project.
+- An error in cleaning the data can lead to inaccurate analysis and models.
+- It is important to fix programmatic errors as soon as possible.
+- Creating a list of all occurrences of all words before lemmatization will ensure that the data is clean and accurate.
+- Doing so will allow for a proper TF-IDF feature extraction, which will likely take full advantage of the models presented.
+
+
+# Next Steps
+
+- Fix the programmatic error that resulted in the set of words post-lemmatize.
+- Create a list of all occurrences of all words before lemmatizing.
+- Re-run the analysis and models with the cleaned data.
+- Evaluate the results of the new analysis and models.
+- Make any necessary adjustments to the models.
+- Continue to iterate on the project until the desired results are achieved.
