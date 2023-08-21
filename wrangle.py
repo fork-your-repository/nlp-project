@@ -219,34 +219,43 @@ def plot_ombre_bars(df, bar_height=0.5):
 
     plt.show()
 
-def most_frequently_words(train):
+def top_10_frequent_python_words(train):
     """
-    Identify the most frequent words for each programming language in the dataset.
+    Identify the top 10 most frequent words for the Python programming language in the dataset.
     
     Args:
     train (pandas.DataFrame): Training dataset with language and content information.
 
     Returns:
-    pandas.Series: The most frequent word for each programming language.
+    pandas.Series: The top 10 most frequent words for Python programming language.
     """
     
-    # Clean and process textual data for Python
+    # Clean and process textual data for the Python category
     python_words = clean(' '.join(train[train.language == "Python"]['extra_clean_contents']))
-   
+    
     # Calculate word frequency for Python
     python_freq = pd.Series(python_words).value_counts()
     
-    # Aggregate word frequencies across languages
-    word_counts = pd.concat([python_freq], axis=1)
-    word_counts = word_counts.fillna(0).astype(int)
-    word_counts.columns = ['Python']
+    # Get the top 10 most frequent words for Python
+    top_10_python_words = python_freq.head(10)
 
-    # Identify the most frequent word for Python
-    most_used_python_words = word_counts.idxmax()
+    # Visualization with specified styling
+    plt.figure(figsize=(10, 7), facecolor='black')
+    ax = plt.gca()
+    ax.set_facecolor('black')  # Setting the background color of the actual plot
 
-    # Return the most frequently used word for Python
-    return most_used_python_words
+    top_10_python_words.plot(kind='barh', color='red', edgecolor='white')
+    plt.gca().invert_yaxis()  # Invert y-axis to have the most frequent word at the top
 
+    # Set text and label colors to white
+    plt.xlabel('Frequency', color='white')
+    plt.ylabel('Words', color='white')
+    plt.title('Top 10 Most Frequent Python Words', color='white')
+    ax.tick_params(axis='both', colors='white')  # Making tick labels white
+
+    plt.show()
+
+    return top_10_python_words
 
 
 def least_frequently_words(train):
