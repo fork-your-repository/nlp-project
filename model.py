@@ -152,7 +152,7 @@ def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
 #     plt.fill_between(df['train_score'], df['validate_score'], alpha=0.2, color='gray')
     plt.xlabel('Min Samples Leaf')
     plt.ylabel('Accuracy')
-    plt.title('Decision Tree Accuracy vs Max Depth')
+    plt.title('RandomForest VS Max Depth')
     plt.legend()
     plt.show()
 
