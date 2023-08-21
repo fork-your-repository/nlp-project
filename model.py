@@ -289,7 +289,7 @@ def final_test(X_bow, y_train, X_validate_bow, y_validate, X_test_bow, y_test):
     print(f'Test accuracy: {test_acc}')
     
     
-def chi_squared(X_bow):
+def chi_squared(X_bow,cv):
     X_bow_df = pd.DataFrame(X_bow.todense())
     lst = list(range(0,1167))
     columns = cv.get_feature_names_out().tolist()
