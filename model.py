@@ -274,7 +274,7 @@ def final_test(X_bow, y_train, X_validate_bow, y_validate, X_test_bow, y_test):
     scores_all = []
 
     # Training the decision tree model with a maximum depth of 1
-     tree = DecisionTreeClassifier(max_depth=1, random_state=123)
+    tree = DecisionTreeClassifier(max_depth=1, random_state=123)
     tree.fit(X_bow, y_train)
     train_acc = tree.score(X_bow, y_train)
     test_acc = tree.score(X_test_bow, y_test)
