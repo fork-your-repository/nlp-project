@@ -41,18 +41,17 @@ def split_data(df, variable):
 
 def prepare_for_modeling(train, validate, test):
     """
-    Prepares the input datasets for modeling. Extracts features and target variables and 
-    converts text data into bag-of-words representation.
+    Prepare the data for modeling by creating feature and target variables.
 
     Args:
-    train, validate, test (pandas.DataFrame): DataFrames containing training, validation, and test data respectively.
+    train (pandas.DataFrame): Training data.
+    validate (pandas.DataFrame): Validation data.
+    test (pandas.DataFrame): Test data.
 
     Returns:
-    X_bow, X_validate_bow, X_test_bow (sparse matrix): Bag-of-words representations of the input datasets.
-    y_train, y_validate, y_test (pandas.Series): Target variables for the input datasets.
-    feature_names (list): Feature names for the bag-of-words representation.
+    X_bow, X_validate_bow, X_test_bow, y_train, y_validate, y_test
     """
-    # Extracting features and target variables from the data
+    # Create feature and target variables
     X_train = train.extra_clean_contents
     X_validate = validate.extra_clean_contents
     X_test = test.extra_clean_contents
@@ -60,7 +59,7 @@ def prepare_for_modeling(train, validate, test):
     y_validate = validate.language
     y_test = test.language
 
-    # Creating bag-of-words representations for the features using CountVectorizer
+    # Create bag-of-words representations
     cv = CountVectorizer()
     X_bow = cv.fit_transform(X_train)
     X_validate_bow = cv.transform(X_validate)
@@ -68,22 +67,20 @@ def prepare_for_modeling(train, validate, test):
     
     feature_names = cv.get_feature_names_out()
     
-    return X_bow, X_validate_bow, X_test_bow, y_train, y_validate, y_test, feature_names
-
+    return X_bow, X_validate_bow, X_test_bow, y_train, y_validate, y_test, feature_names, cv
 
 def decision_tree(X_bow, X_validate_bow, y_train, y_validate):
     """
-    Train a decision tree classifier for various depths and evaluate its performance 
-    on both training and validation datasets.
+    Train a decision tree classifier and evaluate performance.
 
     Args:
-    X_bow, X_validate_bow: Bag-of-words representations of training and validation datasets.
-    y_train, y_validate: Target variables for training and validation datasets.
+    X_bow, X_validate_bow: Bag-of-words representations.
+    y_train, y_validate: Target variables.
 
     Returns:
-    scores_df (pandas.DataFrame): DataFrame containing accuracy scores for different max_depth values.
+    scores_df (pandas.DataFrame): Accuracy scores for different max_depth values.
     """
-    # Training decision tree classifier for different depths and evaluating its performance
+    # Train and evaluate decision tree classifier
     scores_all = []
     for x in range(1, 20):
         tree = DecisionTreeClassifier(max_depth=x, random_state=123)
@@ -95,7 +92,7 @@ def decision_tree(X_bow, X_validate_bow, y_train, y_validate):
 
     scores_df = pd.DataFrame(scores_all, columns=['max_depth', 'train_acc', 'val_acc', 'score_diff'])
 
-    # Visualizing the accuracy scores for different max_depth values
+    # Visualize results
     sns.set_style('whitegrid')
     plt.plot(scores_df['max_depth'], scores_df['train_acc'], label='Train score')
     plt.plot(scores_df['max_depth'], scores_df['val_acc'], label='Validation score')
@@ -110,23 +107,22 @@ def decision_tree(X_bow, X_validate_bow, y_train, y_validate):
 
 def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
     """
-    Train and evaluate a random forest classifier with varying hyperparameters. 
-    Visualizes the accuracy scores for different hyperparameter combinations.
+    Train and evaluate a random forest classifier with different hyperparameters.
 
     Args:
-    X_bow, X_validate_bow: Bag-of-words representations of training and validation datasets.
-    y_train, y_validate: Target variables for training and validation datasets.
+    X_bow, X_validate_bow: Bag-of-words representations.
+    y_train, y_validate: Target variables.
 
     Returns:
-    df (pandas.DataFrame): DataFrame containing model performance metrics for different hyperparameter combinations.
+    df (pandas.DataFrame): Model performance summary.
     """
-    # Defining hyperparameters for the random forest classifier
+    # Define hyperparameters
     train_scores = []
     validate_scores = []
     min_samples_leaf_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     max_depth_values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-    # Training random forest classifier with different hyperparameters and evaluating its performance
+    # Train and evaluate random forest classifier
     for min_samples_leaf, max_depth in zip(min_samples_leaf_values, max_depth_values):
         rf = RandomForestClassifier(min_samples_leaf=min_samples_leaf, max_depth=max_depth, random_state=123)
         rf.fit(X_bow, y_train)
@@ -135,10 +131,11 @@ def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
         train_scores.append(train_score)
         validate_scores.append(validate_score)
 
-    # Calculating differences between train and validation accuracy scores
+    # Calculate differences between train and validation scores
     diff_scores = [train_score - validate_score for train_score, validate_score in zip(train_scores, validate_scores)]
     
-    # Creating a summary DataFrame for the results
+    # Create summary DataFrame
+    
     df = pd.DataFrame({
         'min_samples_leaf': min_samples_leaf_values,
         'max_depth': max_depth_values,
@@ -147,10 +144,11 @@ def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
         'score_difference': diff_scores
     })
     
-    # Visualizing the accuracy scores for different hyperparameter combinations
+    # Visualize results
     sns.set_style('whitegrid')
     plt.plot(df['min_samples_leaf'], df['train_score'], label='Train score')
     plt.plot(df['min_samples_leaf'], df['validate_score'], label='Validation score')
+#     plt.fill_between(df['train_score'], df['validate_score'], alpha=0.2, color='gray')
     plt.xlabel('Min Samples Leaf')
     plt.ylabel('Accuracy')
     plt.title('Decision Tree Accuracy vs Max Depth')
@@ -158,6 +156,7 @@ def random_forest_scores(X_bow, y_train, X_validate_bow, y_validate):
     plt.show()
 
     return df
+
 def k_nearest(X_bow, y_train, X_validate_bow, y_validate):
     """
     Trains and evaluates KNN models for different values of k and plots the results.
@@ -178,12 +177,10 @@ def k_nearest(X_bow, y_train, X_validate_bow, y_validate):
     results: pandas DataFrame
         Contains the train and validation accuracy for each value of k.
     """
-    # Initializing lists to store various metrics for different values of k
+    # KNN model evaluation for different values of k
     metrics = []
     train_score = []
     validate_score = []
-
-    # Iterating through different values of k to train and evaluate the KNN model
     for k in range(1, 21):
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(X_bow, y_train)
@@ -192,16 +189,15 @@ def k_nearest(X_bow, y_train, X_validate_bow, y_validate):
         diff_score = train_score[-1] - validate_score[-1]
         metrics.append({'k': k, 'train_score': train_score[-1], 'validate_score': validate_score[-1], 'diff_score': diff_score})
 
-    # Computing baseline accuracy for comparison
     baseline_accuracy = (y_train == 6).mean()
 
-    # Storing metrics in a pandas DataFrame
     results = pd.DataFrame.from_records(metrics)
 
-    # Visualizing the results using a plot
+    # Visualize results
     sns.set_style('whitegrid')
     plt.plot(results['k'], results['train_score'], label='Train score')
     plt.plot(results['k'], results['validate_score'], label='Validation score')
+#     plt.fill_between(df['train_score'], df['validate_score'], alpha=0.2, color='gray')
     plt.xlabel('K Neighbors')
     plt.ylabel('Accuracy')
     plt.title('KNN')
@@ -209,7 +205,6 @@ def k_nearest(X_bow, y_train, X_validate_bow, y_validate):
     plt.show()
 
     return results
-
 
 def best_model_classification_matrix(X_bow, y_train, X_validate_bow, y_validate):
     """
@@ -255,7 +250,7 @@ def best_model_classification_matrix(X_bow, y_train, X_validate_bow, y_validate)
     print(pd.DataFrame(report))
     print()
 
-
+#Final Test function
 def final_test(X_bow, y_train, X_validate_bow, y_validate, X_test_bow, y_test):
     """
     Trains a decision tree with a maximum depth of 1 on training data and evaluates its performance on test data.
@@ -279,7 +274,7 @@ def final_test(X_bow, y_train, X_validate_bow, y_validate, X_test_bow, y_test):
     scores_all = []
 
     # Training the decision tree model with a maximum depth of 1
-    tree = DecisionTreeClassifier(max_depth=1, random_state=123)
+     tree = DecisionTreeClassifier(max_depth=1, random_state=123)
     tree.fit(X_bow, y_train)
     train_acc = tree.score(X_bow, y_train)
     test_acc = tree.score(X_test_bow, y_test)
@@ -292,3 +287,14 @@ def final_test(X_bow, y_train, X_validate_bow, y_validate, X_test_bow, y_test):
     print(f"Tree with max depth of 1 train")
     print(pd.DataFrame(report))
     print(f'Test accuracy: {test_acc}')
+    
+    
+    def chi_squared():
+    X_bow_df = pd.DataFrame(X_bow.todense())
+    lst = list(range(0,1167))
+    columns = cv.get_feature_names_out().tolist()
+    dictionary = dict(zip(lst, columns))
+    X_bow_df.rename(columns=dictionary)
+    chi2, p, degf, expected = stats.chi2_contingency(X_bow_df)
+    return chi2, p
+
