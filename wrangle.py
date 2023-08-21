@@ -1,4 +1,3 @@
-
 # Import Libraries
 import pandas as pd
 import numpy as np
@@ -459,7 +458,7 @@ def least_frequently_words(train):
     html_words = clean(' '.join(train[train.language == "HTML"]['extra_clean_contents']))
     type_words = clean(' '.join(train[train.language == "TypeScript"]['extra_clean_contents']))
     other_words = clean(' '.join(train[train.language == "Other"]['extra_clean_contents']))
-    all_words = clean(' '.join(test['extra_clean_contents']))
+    all_words = clean(' '.join(train['extra_clean_contents']))
     
     # Calculate word frequency for each language
     python_freq = pd.Series(python_words).value_counts()
