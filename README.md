@@ -1,6 +1,4 @@
-![Most Forked NLP](Most Forked NLP.jpg)
-
-
+git 
 # <a name="top"></a>Most Forked Repositories Project- Forking Solutions
 ![]()
 
